@@ -1,4 +1,7 @@
 import requests
+import os
+import zipfile
+import io
 
 download_uris = [
     "https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2018_Q4.zip",
@@ -9,9 +12,23 @@ download_uris = [
     "https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2020_Q1.zip",
     "https://divvy-tripdata.s3.amazonaws.com/Divvy_Trips_2220_Q1.zip",
 ]
-#aa
+
 def main():
-    # your code here
+
+    if not os.path.exists("downloads"):
+        os.makedirs("downloads")
+
+    for uri in download_uris:
+        r = requests.get(uri)
+
+        if r.ok:
+            name = os.path.split(uri)[1]
+            name = name.removesuffix('.zip')
+
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            #z.extractall("downloads")
+            z.extract(name+".csv", "downloads")
+
     pass
 
 
